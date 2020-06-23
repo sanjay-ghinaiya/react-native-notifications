@@ -27,6 +27,7 @@ _For information regarding proper integration with [react-native-navigation](htt
 - Built-in notification drawer management
 - High degree of code extensibility to allow for advanced custom layouts and any specific notifications behavior as available by [Android's API](https://developer.android.com/training/notify-user/build-notification.html)
 - Android equivalent of React-Native's implementation of [`PushNotificationsIOS.getInitialNotification()`](https://facebook.github.io/react-native/docs/pushnotificationios.html#getinitialnotification).
+- Schedule Notification is now work, with [`fireDate`] key on Payload. To use add futureMillis to the [`fireDate`]
 
 _Upcoming: local notifications, background-state Rx queue (iOS equivalent)_
 

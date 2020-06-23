@@ -1,8 +1,8 @@
 {
   "name": "react-native-notifications-pfy",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Advanced Push Notifications (Silent, interactive notifications) for iOS & Android + Schedule Module",
-  "author": "Lidan Hifi <lidan.hifi@gmail.com>, Ryan A. Syach <azrian.ryan@gmail.com>",
+  "author": "Ryan A. Syach <azrian.ryan@gmail.com>",
   "license": "MIT",
   "keywords": [
     "react-component",

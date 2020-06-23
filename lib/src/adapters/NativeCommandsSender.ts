@@ -8,6 +8,7 @@ import { NotificationChannel } from '../interfaces/NotificationChannel';
 interface NativeCommandsModule {
   getInitialNotification(): Promise<Object>;
   postLocalNotification(notification: Notification, id: number): void;
+  clearAlarm(id: number): void;
   requestPermissions(): void;
   abandonPermissions(): void;
   refreshToken(): void;
@@ -35,6 +36,10 @@ export class NativeCommandsSender {
 
   postLocalNotification(notification: Notification, id: number) {
     return this.nativeCommandsModule.postLocalNotification(notification, id);
+  }
+
+  clearAlarm(id: number){
+    this.nativeCommandsModule.clearAlarm(id);
   }
 
   getInitialNotification(): Promise<Object> {

@@ -1,5 +1,6 @@
 package com.wix.reactnativenotifications.core.notification;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,6 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.text.LoginFilter;
+import android.util.Log;
 
 import com.facebook.react.bridge.ReactContext;
 import com.wix.reactnativenotifications.core.AppLaunchHelper;
@@ -16,8 +20,11 @@ import com.wix.reactnativenotifications.core.AppLifecycleFacade.AppVisibilityLis
 import com.wix.reactnativenotifications.core.AppLifecycleFacadeHolder;
 import com.wix.reactnativenotifications.core.InitialNotificationHolder;
 import com.wix.reactnativenotifications.core.JsIOHelper;
+import com.wix.reactnativenotifications.core.MyNotificationPublisher;
 import com.wix.reactnativenotifications.core.NotificationIntentAdapter;
 import com.wix.reactnativenotifications.core.ProxyService;
+
+import androidx.annotation.RequiresApi;
 
 import static com.wix.reactnativenotifications.Defs.NOTIFICATION_OPENED_EVENT_NAME;
 import static com.wix.reactnativenotifications.Defs.NOTIFICATION_RECEIVED_EVENT_NAME;
@@ -137,6 +144,7 @@ public class PushNotification implements IPushNotification {
     }
 
     protected Notification buildNotification(PendingIntent intent) {
+        if(getNotificationBuilder(intent) == null) return null; //HERE
         return getNotificationBuilder(intent).build();
     }
 
@@ -193,7 +201,35 @@ public class PushNotification implements IPushNotification {
 
     protected void postNotification(int id, Notification notification) {
         final NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(id, notification);
+        Bundle data = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            data = notification.extras;
+        }
+        System.out.println(data);
+        if(data.getString("fireDate") != null) {
+            scheduleNotification(id, notification, Long.parseLong(data.getString("fireDate")));
+        } else {
+            notificationManager.notify(id, notification); //here
+        }
+    }
+
+    private void scheduleNotification (int id, Notification notification , long fireDate) { // tambah disini
+
+        long delay = fireDate - System.currentTimeMillis();
+
+        System.out.println(delay);
+
+        notification.defaults=Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE;
+
+        Intent notificationIntent = new Intent(mContext, MyNotificationPublisher.class ) ;
+        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION_ID , 1 ) ;
+        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION , notification) ;
+        final int ids = (int) System.currentTimeMillis(); // Check the id here
+        PendingIntent pendingIntent = PendingIntent.getBroadcast ( mContext, id , notificationIntent , PendingIntent.FLAG_UPDATE_CURRENT ) ;
+        long futureInMillis = SystemClock. elapsedRealtime () + delay ;
+        AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context. ALARM_SERVICE ) ;
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP , futureInMillis , pendingIntent) ;
     }
 
     protected int createNotificationId(Notification notification) {

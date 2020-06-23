@@ -20,6 +20,10 @@ export class Commands {
     return notificationId;
   }
 
+  clearAlarm(id: number) {
+    this.nativeCommandsSender.clearAlarm(id);
+}
+
   public async getInitialNotification(): Promise<Notification | undefined> {
     return this.nativeCommandsSender.getInitialNotification().then((payload) => {
       if (payload) {

@@ -1,7 +1,9 @@
 package com.wix.reactnativenotifications;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.wix.reactnativenotifications.core.AppLifecycleFacadeHolder;
 import com.wix.reactnativenotifications.core.InitialNotificationHolder;
+import com.wix.reactnativenotifications.core.MyNotificationPublisher;
 import com.wix.reactnativenotifications.core.NotificationIntentAdapter;
 import com.wix.reactnativenotifications.core.ReactAppLifecycleFacade;
 import com.wix.reactnativenotifications.core.notification.INotificationChannel;
@@ -101,6 +104,17 @@ public class RNNotificationsModule extends ReactContextBaseJavaModule implements
         final Bundle notificationProps = Arguments.toBundle(notificationPropsMap);
         final IPushNotification pushNotification = PushNotification.get(getReactApplicationContext().getApplicationContext(), notificationProps);
         pushNotification.onPostRequest(notificationId);
+    }
+
+    @ReactMethod
+    public void clearAlarm(int id) {
+        System.out.println("CLEAR ALARM IS CALLED");
+        Intent notificationIntent = new Intent(getReactApplicationContext().getApplicationContext(), MyNotificationPublisher.class);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast (getReactApplicationContext().getApplicationContext(), id , notificationIntent , PendingIntent.FLAG_UPDATE_CURRENT ) ;
+        AlarmManager alarmManager = (AlarmManager) getReactApplicationContext().getApplicationContext().getSystemService(Context. ALARM_SERVICE ) ;
+
+        alarmManager.cancel(pendingIntent);
     }
 
     @ReactMethod

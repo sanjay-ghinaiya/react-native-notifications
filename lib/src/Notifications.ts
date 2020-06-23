@@ -57,6 +57,12 @@ export class NotificationsRoot {
   public postLocalNotification(notification: Notification, id: number) {
     return this.commands.postLocalNotification(notification, id);
   }
+  
+
+  // ClearAlarm
+  clearAlarm(id: number) {
+    return this.commands.clearAlarm(id);
+  }
 
   /**
    * getInitialNotification

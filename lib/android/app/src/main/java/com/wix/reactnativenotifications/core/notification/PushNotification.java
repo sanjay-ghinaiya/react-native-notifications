@@ -222,7 +222,7 @@ public class PushNotification implements IPushNotification {
         notification.defaults=Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE;
 
         Intent notificationIntent = new Intent(mContext, MyNotificationPublisher.class ) ;
-        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION_ID , 1 ) ;
+        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION_ID , id);
         notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION , notification) ;
         final int ids = (int) System.currentTimeMillis(); // Check the id here
         PendingIntent pendingIntent = PendingIntent.getBroadcast ( mContext, id , notificationIntent , PendingIntent.FLAG_UPDATE_CURRENT ) ;

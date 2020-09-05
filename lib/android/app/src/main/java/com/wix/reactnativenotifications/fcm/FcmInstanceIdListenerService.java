@@ -23,12 +23,16 @@ public class FcmInstanceIdListenerService extends FirebaseMessagingService {
         Bundle bundle = message.toIntent().getExtras();
         if(BuildConfig.DEBUG) Log.d(LOGTAG, "New message from FCM: " + bundle);
 
-        try {
-            final IPushNotification notification = PushNotification.get(getApplicationContext(), bundle);
-            notification.onReceived();
-        } catch (IPushNotification.InvalidNotificationException e) {
-            // An FCM message, yes - but not the kind we know how to work with.
-            if(BuildConfig.DEBUG) Log.v(LOGTAG, "FCM message handling aborted", e);
+        if (message.getData().containsKey("af-uinstall-tracking")) {
+            return;
+        } else {
+            try {
+                final IPushNotification notification = PushNotification.get(getApplicationContext(), bundle);
+                notification.onReceived();
+            } catch (IPushNotification.InvalidNotificationException e) {
+                // An FCM message, yes - but not the kind we know how to work with.
+                if(BuildConfig.DEBUG) Log.v(LOGTAG, "FCM message handling aborted", e);
+            }
         }
     }
 }

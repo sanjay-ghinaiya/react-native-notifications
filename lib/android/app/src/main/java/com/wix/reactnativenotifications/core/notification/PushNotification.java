@@ -83,6 +83,9 @@ public class PushNotification implements IPushNotification {
     protected int postNotification(Integer notificationId) {
         final PendingIntent pendingIntent = getCTAPendingIntent();
         final Notification notification = buildNotification(pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            notification.extras = mNotificationProps.mBundle;
+        }
         return postNotification(notification, notificationId);
     }
 
